@@ -1,0 +1,14 @@
+name: isoforge
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - pip
+  - rust>=1.85
+  - compilers
+  - make
+  - cmake
+  - pkg-config
+  - zlib
+  - bzip2
+  - xz

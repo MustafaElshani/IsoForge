@@ -1,0 +1,46 @@
+# Build artefacts
+target/
+**/target/
+*.so
+*.rlib
+build/
+dist/
+wheels/
+*.egg-info/
+.eggs/
+.Python
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+.ipynb_checkpoints/
+.pytest_cache/
+
+# Run outputs
+isoforge_index/
+*_isoforge_index/
+*_alignments/
+*_isoforge_db/
+*_TSS_TES_Clusters/
+*.spill.parquet
+
+# Alignment and reference data
+*.bam
+*.bai
+*.sam
+*.cram
+*.fastq
+*.fastq.gz
+*.db
+
+# Local
+*.bundle
+*.bak
+nohup.out
+.DS_Store
+*.swp
+*.swo
+*~

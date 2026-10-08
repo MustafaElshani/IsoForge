@@ -1,0 +1,14 @@
+cff-version: 1.2.0
+message: "If you use IsoForge, please cite it as below."
+title: "IsoForge"
+version: 1.0.0
+type: software
+authors:
+  - family-names: Elshani
+    given-names: Mustafa
+  - family-names: Zhang
+    given-names: Ying
+  - family-names: Harrison
+    given-names: David J.
+repository-code: "https://github.com/MustafaElshani/IsoForge"
+license: MIT

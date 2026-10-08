@@ -1,0 +1,54 @@
+[build-system]
+requires = ["maturin>=1.7,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "isoforge"
+version = "1.0.0"
+description = "IsoForge is a hypergraph-based tool for long-read RNA-seq: it keeps every read whole to discover isoforms with their start and poly(A) sites, count them, and call gene fusions, all in one run."
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+    {name = "Mustafa Elshani"},
+]
+readme = "README.md"
+keywords = ["isoforge", "long-read", "transcriptome", "isoform", "ONT", "PacBio", "RNA", "polyadenylation"]
+classifiers = [
+    "Intended Audience :: Science/Research",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Rust",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
+dependencies = [
+    "pandas>=2.0",
+    "pyarrow>=14.0",
+]
+
+[project.scripts]
+isoforge = "isoforge.cli:main"
+
+[project.urls]
+Homepage    = "https://github.com/MustafaElshani/IsoForge"
+Repository  = "https://github.com/MustafaElshani/IsoForge"
+Issues      = "https://github.com/MustafaElshani/IsoForge/issues"
+
+[tool.maturin]
+python-source = "src"
+python-packages = ["isoforge"]
+module-name = "isoforge_core"
+features = ["pyo3/extension-module"]
+include = [
+    {path = "src/**/*.py", format = "sdist"},
+    {path = "src/**/*.json", format = "sdist"},
+    {path = "vendor/**/*", format = "sdist"},
+]
+exclude = [
+    {path = "illustrations/**/*", format = "sdist"},
+]
