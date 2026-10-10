@@ -23,10 +23,17 @@ conda activate isoforge
 
 IsoForge is built from source and is tested on Linux (x86-64). The script needs conda; it installs Python, Rust and
 the C build tools into the environment. minimap2 and htslib are compiled in, so there is nothing else to install.
+`bash install.sh --help` shows the other ways to call the script.
 
-`bash install.sh --help` shows the other ways to call the script. Without it: `conda env create -f environment.yml`,
-`conda activate isoforge`, `pip install .` In an environment of your own, `pip install .` needs Python 3.10 or later,
-Rust 1.85 or later and the C build tools (a compiler, make, cmake).
+With pip, straight from GitHub:
+
+```bash
+pip install git+https://github.com/MustafaElshani/IsoForge.git
+```
+
+pip compiles IsoForge, which takes a few minutes and needs Python 3.10 or later, Rust 1.85 or later and the C build
+tools (a compiler, make, cmake). The conda environment of `environment.yml` has them:
+`conda env create -f environment.yml`, then `conda activate isoforge`. In a clone, `pip install .` does the same.
 
 ## Quick start
 
