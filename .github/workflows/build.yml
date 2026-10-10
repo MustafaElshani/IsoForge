@@ -1,0 +1,140 @@
+# Builds the Linux x86-64 wheel and the source distribution on every push, and checks that both install and run.
+# A manual run with "pypi" ticked, or a release tag (v1.2.3), then publishes them to PyPI.
+# A manual run with "testpypi" ticked uploads them to TestPyPI instead (a rehearsal).
+# A tag with a suffix (v1.2.3-rc1) builds and publishes nothing.
+
+name: Build & Publish
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      pypi:
+        description: "Publish the built files to PyPI (a version can be published only once)"
+        type: boolean
+        default: false
+      testpypi:
+        description: "Upload the built files to TestPyPI (a rehearsal; nothing goes to PyPI)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Wheel — Linux x86_64
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build wheel
+        uses: PyO3/maturin-action@v1
+        with:
+          target: x86_64
+          args: --release --out dist --find-interpreter --locked
+          sccache: "true"
+          manylinux: auto
+        env:
+          CPATH: ""
+          C_INCLUDE_PATH: ""
+          CPLUS_INCLUDE_PATH: ""
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install the wheel and run it
+        run: |
+          python -m pip install dist/*.whl
+          isoforge --version
+          isoforge annotate --help > /dev/null
+          python -c "import isoforge_core; print('engine loaded')"
+
+      - name: Upload wheel
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-linux-x86_64
+          path: dist/*.whl
+
+  sdist:
+    name: Source distribution
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build sdist
+        uses: PyO3/maturin-action@v1
+        with:
+          command: sdist
+          args: --out dist
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Build from the sdist and run it
+        run: |
+          python -m pip install dist/*.tar.gz
+          isoforge --version
+          python -c "import isoforge_core; print('engine loaded')"
+
+      - name: Upload sdist
+        uses: actions/upload-artifact@v4
+        with:
+          name: sdist
+          path: dist/*.tar.gz
+
+  publish:
+    name: Publish to PyPI
+    needs: [build, sdist]
+    runs-on: ubuntu-latest
+    if: >-
+      (startsWith(github.ref, 'refs/tags/v') && !contains(github.ref_name, '-'))
+      || (github.event_name == 'workflow_dispatch' && inputs.pypi)
+    environment:
+      name: pypi
+      url: https://pypi.org/project/isoforge/
+    permissions:
+      id-token: write
+
+    steps:
+      - name: Download the wheel and the sdist
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist/
+
+  publish-testpypi:
+    name: Publish to TestPyPI
+    needs: [build, sdist]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' && inputs.testpypi && !inputs.pypi
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/project/isoforge/
+    permissions:
+      id-token: write
+
+    steps:
+      - name: Download the wheel and the sdist
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Publish to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
+          packages-dir: dist/
+          skip-existing: true

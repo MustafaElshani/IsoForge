@@ -51,4 +51,5 @@ include = [
 ]
 exclude = [
     {path = "illustrations/**/*", format = "sdist"},
+    {path = ".github/**/*", format = "sdist"},
 ]
