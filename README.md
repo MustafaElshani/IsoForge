@@ -1,7 +1,7 @@
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="illustrations/isoforge_logo_dark.svg">
-    <img src="illustrations/isoforge_logo.svg" alt="IsoForge" height="320">
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/MustafaElshani/IsoForge/main/illustrations/isoforge_logo_dark.svg">
+    <img src="https://raw.githubusercontent.com/MustafaElshani/IsoForge/main/illustrations/isoforge_logo.svg" alt="IsoForge" height="320">
   </picture>
 </p>
 
@@ -10,9 +10,19 @@ Each long read is kept whole, with its intron chain and both ends, as one hypere
 RNA-seq, a single run reports annotated and novel isoforms with their transcription start and poly(A) sites, read
 counts per sample (annotated small RNAs included) and gene fusions.
 
-![IsoForge at a glance](illustrations/isoforge_at_a_glance.png)
+![IsoForge at a glance](https://raw.githubusercontent.com/MustafaElshani/IsoForge/main/illustrations/isoforge_at_a_glance.png)
 
 ## Installation
+
+```bash
+pip install isoforge
+```
+
+IsoForge needs Python 3.10 or later and is tested on Linux (x86-64), where pip installs a ready-built package:
+minimap2 and htslib are compiled in, so there is nothing else to install. On other systems pip builds IsoForge from
+source, which takes a few minutes and needs Rust 1.85 or later and the C build tools (a compiler, make, cmake).
+
+To build from this repository with conda:
 
 ```bash
 git clone https://github.com/MustafaElshani/IsoForge.git
@@ -21,19 +31,9 @@ bash install.sh              # creates the conda environment "isoforge" and buil
 conda activate isoforge
 ```
 
-IsoForge is built from source and is tested on Linux (x86-64). The script needs conda; it installs Python, Rust and
-the C build tools into the environment. minimap2 and htslib are compiled in, so there is nothing else to install.
-`bash install.sh --help` shows the other ways to call the script.
-
-With pip, straight from GitHub:
-
-```bash
-pip install git+https://github.com/MustafaElshani/IsoForge.git
-```
-
-pip compiles IsoForge, which takes a few minutes and needs Python 3.10 or later, Rust 1.85 or later and the C build
-tools (a compiler, make, cmake). The conda environment of `environment.yml` has them:
-`conda env create -f environment.yml`, then `conda activate isoforge`. In a clone, `pip install .` does the same.
+`bash install.sh --help` shows the other ways to call the script. The repository as it stands is installed with
+`pip install git+https://github.com/MustafaElshani/IsoForge.git`; the conda environment of `environment.yml` has what
+that build needs (`conda env create -f environment.yml`, then `conda activate isoforge`).
 
 ## Quick start
 
@@ -235,4 +235,4 @@ The IsoForge manuscript is in preparation. Until it is out, please cite this rep
 
 ## License
 
-MIT, see [LICENSE](LICENSE).
+MIT, see [LICENSE](https://github.com/MustafaElshani/IsoForge/blob/main/LICENSE).
