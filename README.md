@@ -178,6 +178,9 @@ GTF transcript records carry `transcript_status`, `tss_site`, `tss_Feature`, `po
 `polyA_signal`. A transcript that has the intron chain of an annotated one and another start or poly(A) site also
 carries `variant_of`, the ID of that annotated transcript.
 
+`gene_type` and `transcript_type` are the annotation's: annotated genes and transcripts keep them, novel ones have
+none. SQANTI3 classifies the novel transcripts (coding, NMD, intron retention).
+
 </details>
 
 ## Options

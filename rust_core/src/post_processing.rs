@@ -3124,12 +3124,13 @@ pub fn run_gtf(
         let strand = normalize_strand(&g.strand);
         let a_gid = db.format_gene_id(gid, &gene_id_map);
         let a_gname = gene_name_map.get(&gid).cloned().unwrap_or_else(|| a_gid.clone());
-        let g_type = gene_type_map.get(&gid).cloned().unwrap_or_else(|| "lncRNA".to_string());
+        // The gene type is the annotation's; a novel gene has none.
+        let g_type = gene_type_map.get(&gid).map(|t| format!(" gene_type \"{}\";", t)).unwrap_or_default();
         let g_status = gene_status_map.get(&gid).cloned().unwrap_or_else(|| "NOVEL".to_string());
 
         // Gene line: gene-level attributes only, no transcript_id.
         writeln!(out, "{}\tIsoForge\tgene\t{}\t{}\t.\t{}\t.\tgene_id \"{}\"; \
-                       gene_name \"{}\"; gene_type \"{}\"; gene_status \"{}\"; isoforge_gene \"{}\";",
+                       gene_name \"{}\";{} gene_status \"{}\"; isoforge_gene \"{}\";",
                  g.chromosome, g.start, g.end, strand, a_gid, a_gname, g_type, g_status, gid)?;
         lines_written += 1;
 
@@ -3137,7 +3138,8 @@ pub fn run_gtf(
             let tid = tx.transcript_id;
             let a_tid = db.format_transcript_id(tid, &tx_id_map);
             let a_tname = tx_name_map.get(&tid).cloned().unwrap_or_else(|| a_tid.clone());
-            let t_type = tx_type_map.get(&tid).cloned().unwrap_or_else(|| "lncRNA".to_string());
+            // The transcript type is the annotation's; a novel transcript has none.
+            let t_type = tx_type_map.get(&tid).map(|t| format!(" transcript_type \"{}\";", t)).unwrap_or_default();
             let t_status = tx_status_map.get(&tid).cloned().unwrap_or_else(|| "NOVEL".to_string());
 
             // Transcript span from exon coordinates, which are (min, max) on both strands.
@@ -3223,8 +3225,8 @@ pub fn run_gtf(
 
             // Transcript attributes
             let mut t_attrs = format!(
-                "gene_id \"{}\"; transcript_id \"{}\"; gene_name \"{}\"; transcript_name \"{}\"; \
-                 transcript_type \"{}\"; transcript_status \"{}\"; isoforge_gene \"{}\"; isoforge_transcript \"{}\";",
+                "gene_id \"{}\"; transcript_id \"{}\"; gene_name \"{}\"; transcript_name \"{}\";\
+                 {} transcript_status \"{}\"; isoforge_gene \"{}\"; isoforge_transcript \"{}\";",
                 a_gid, a_tid, a_gname, a_tname, t_type, t_status, gid, tid
             );
 
@@ -4049,7 +4051,6 @@ pub fn split_annotated_forms(db: &mut PostDB, snap: i64, max_extension: i64, min
             db.chains.insert(next, c);
         }
         let a = &mut db.annot;
-        if let Some(ty) = a.tx_type_map.get(&tid).cloned() { a.tx_type_map.insert(next, ty); }
         a.tx_status_map.insert(next, "NOVEL".to_string());
         a.tx_novelty.insert(next, "Novel".to_string());
         a.known_tx_ids.insert(next);
